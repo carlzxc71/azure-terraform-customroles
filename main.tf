@@ -38,13 +38,13 @@ resource "azapi_resource" "custom_network_contributor_role_definition" {
 
 data "azapi_resource" "uami" {
   type                   = "Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30"
-  resource_id            = provider::azapi::resource_group_resource_id("4e688a6c-a629-43aa-b7fd-21aa288914a6", "rg-prd-sc-uami", "Microsoft.ManagedIdentity/userAssignedIdentities", ["uami-prd-sc-azapifunctions"])
+  resource_id            = provider::azapi::resource_group_resource_id("<your-sub-id>", "rg-prd-sc-uami", "Microsoft.ManagedIdentity/userAssignedIdentities", ["uami-prd-sc-azapifunctions"])
   response_export_values = ["properties.principalId"]
 }
 
 resource "azapi_resource" "custom_network_contributor_role_assignment" {
   type      = "Microsoft.Authorization/roleAssignments@2022-04-01"
-  parent_id = "/subscriptions/4e688a6c-a629-43aa-b7fd-21aa288914a6"
+  parent_id = "/subscriptions/<your-sub-id>"
   name      = uuidv5("oid", data.azapi_resource.uami.output.properties.principalId)
   body = {
     properties = {
@@ -59,7 +59,7 @@ resource "azapi_resource" "custom_network_contributor_role_assignment" {
 
 resource "azapi_resource" "owner_with_abac" {
   type      = "Microsoft.Authorization/roleAssignments@2022-04-01"
-  parent_id = "/subscriptions/4e688a6c-a629-43aa-b7fd-21aa288914a6"
+  parent_id = "/subscriptions/<your-sub-id>"
   name      = uuidv5("oid", "customownerwithabac")
   body = {
     properties = {
